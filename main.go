@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-//Usage blixss --target-url <<target url>> --post-body <<post body>> --listener-server <<listener server>> -not <<omitted parameters>>
+//Usage blixss -target <<target url>> -body <<post body>> -listener <<listener server>> -not <<omitted parameters>>
 // e.g "blixss -target "http://example.com" -body "parameter1=test&parameter2=test2&parameter3=test3" -listener "http://10.10.15.122:45000" -not "parameter2,parameter3"
 
 import (
@@ -28,7 +28,7 @@ func main() {
 		not            string
 	)
 
-	notRegPattern := "(?:\\b\\w+\\b(?:,(?!\\s|$)))+(?!,)"
+	notRegPattern := "^\\w+(,\\w+)*$"
 
 	flag.StringVar(&targetUrl, "target", "", "Target URL")
 	flag.StringVar(&postBody, "body", "", "Post Body")
