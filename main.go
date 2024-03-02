@@ -56,7 +56,7 @@ func main() {
 	//Check omited values
 	if not != "" {
 		match, err := regexp.MatchString(notRegPattern, not)
-		if err != nil || match != true {
+		if err != nil || match != false {
 			fmt.Println("Invalid not flag format. Use -not \"parameter1,parameter2\"")
 			os.Exit(1)
 		}
