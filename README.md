@@ -7,7 +7,7 @@ BLiXSS is a command-line tool designed for blind XSS (Cross-Site Scripting) test
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/blixss.git
+git clone https://github.com/lrluque/blixss.git
 ```
 
 Navigate to the `blixss` directory:
