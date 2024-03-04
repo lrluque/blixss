@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
+	"strings"	
 )
 
 // Usage blixss -t <<target url>> -b <<post body>> -l <<listener server>> -d <<custom/request/directory>>
