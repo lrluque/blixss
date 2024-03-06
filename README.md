@@ -1,6 +1,6 @@
 ## Blind XSS Tool (BLiXSS)
 
-BLiXSS is a command-line tool designed for blind XSS (Cross-Site Scripting) testing. It crafts malicious payloads to inject into web application parameters, allowing you to detect potential vulnerabilities.
+BLiXSS is a command-line tool designed for blind XSS (Cross-Site Scripting) testing. It crafts a malicious payload to inject into web application parameters, allowing you to detect potential vulnerabilities.
 
 ### Installation
 
