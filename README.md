@@ -41,7 +41,7 @@ Parameter values different from 'XSS' will not be tested.
 
 ### Disclaimer
 
-This tool is for educational purposes only. Do not use it for any illegal activities. The developers are not responsible for any misuse or damage caused by BLiXSS.
+This tool is for educational purposes only. Do not use it for any illegal activities. I am not responsible for any misuse or damage caused by BLiXSS.
 
 ### License
 
