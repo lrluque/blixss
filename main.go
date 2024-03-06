@@ -11,7 +11,6 @@ import (
 )
 
 // Usage blixss -t <<target url>> -b <<post body>> -l <<listener server>> -d <<custom/request/directory>>
-// e.g "blixss -target "http://example.com" -body "parameter1=XSS&parameter2=test2&parameter3=XSS" -listener "http://10.10.15.122:45000" -not "parameter2,parameter3"
 // Parameter values different from 'XSS' will not be tested
 import (
 	"os"
